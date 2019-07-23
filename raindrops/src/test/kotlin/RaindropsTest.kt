@@ -33,8 +33,8 @@ class RaindropsTest(val input: Int, val expectedOutput: String) {
     }
 
     @Test
-    fun test() {
+    fun test()
+    {
         assertEquals(expectedOutput, Raindrops.convert(input))
     }
-
 }
