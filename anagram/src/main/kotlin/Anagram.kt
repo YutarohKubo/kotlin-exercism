@@ -1,29 +1,13 @@
 class Anagram(private val anagramStr: String) {
 
-    fun match(wordList: List<String>): Set<String> {
-        val outputSet = hashSetOf<String>()
+    fun match (wordList: List<String>)
+            = if (anagramStr.any { it.isLowerCase() })
+        wordList.filter { checkAnagram(it) }.toSet()
+    else
+        emptySet()
 
-        outFor@ for (str in wordList) {
-            val chList = arrayListOf<Char>()
-            for ((index, c) in anagramStr.toCharArray().withIndex()) {
-                if (index != 0 && c.isUpperCase()) {
-                    continue@outFor
-                }
-                chList.add(c.toLowerCase())
-            }
+    private fun checkAnagram (word: String)
+            = word.toLowerCase().toList().sorted().joinToString("")
+            .equals(anagramStr.toLowerCase().toList().sorted().joinToString(""))
 
-            for (c in str.toLowerCase()) {
-                if (!chList.contains(c)) {
-                    continue@outFor
-                }
-                chList.removeAt(chList.indexOf(c))
-            }
-
-            if (chList.size == 0) {
-                outputSet.add(str)
-            }
-        }
-
-        return outputSet
-    }
 }

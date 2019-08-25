@@ -9,46 +9,21 @@ const val SATURN_ORBITAL_SECOND: Double = 29.447498 * EARTH_ORBITAL_SECOND
 const val URANUS_ORBITAL_SECOND: Double = 84.016846 * EARTH_ORBITAL_SECOND
 const val NEPTUNE_ORBITAL_SECOND: Double = 164.79132 * EARTH_ORBITAL_SECOND
 
-
 class SpaceAge (private val second: Long) {
 
-	fun onEarth (): Double {
+	fun onEarth () = BigDecimal(second.toDouble()/EARTH_ORBITAL_SECOND).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
 
-		return BigDecimal(second.toDouble()/EARTH_ORBITAL_SECOND).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
-	}
+	fun onMercury() = BigDecimal(second.toDouble()/MERCURY_ORBITAL_SECOND).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
 
-	fun onMercury(): Double {
+	fun onVenus() = BigDecimal(second.toDouble()/VENUS_ORBITAL_SECOND).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
 
-		return BigDecimal(second.toDouble()/MERCURY_ORBITAL_SECOND).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
-	}
+	fun onMars() = BigDecimal(second.toDouble()/MARS_ORBITAL_SECOND).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
 
-	fun onVenus(): Double {
-		return BigDecimal(second.toDouble()/VENUS_ORBITAL_SECOND).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
-	}
+	fun onJupiter() = BigDecimal(second.toDouble()/JUPITER_ORBITAL_SECOND).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
 
-	fun onMars(): Double {
-		return BigDecimal(second.toDouble()/MARS_ORBITAL_SECOND).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
-	}
+	fun onSaturn () = BigDecimal(second.toDouble()/SATURN_ORBITAL_SECOND).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
 
-	fun onJupiter(): Double {
-		return BigDecimal(second.toDouble()/JUPITER_ORBITAL_SECOND).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
-	}
+	fun onUranus () = BigDecimal(second.toDouble()/URANUS_ORBITAL_SECOND).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
 
-	fun onSaturn (): Double {
-		return BigDecimal(second.toDouble()/SATURN_ORBITAL_SECOND).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
-	}
-
-	fun onUranus (): Double {
-		return BigDecimal(second.toDouble()/URANUS_ORBITAL_SECOND).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
-	}
-
-	fun onNeptune (): Double {
-		return BigDecimal(second.toDouble()/NEPTUNE_ORBITAL_SECOND).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
-	}
-}
-
-fun main (args: Array<String>) {
-
-	val age = SpaceAge(189839836)
-	println(age.onVenus())
+	fun onNeptune () = BigDecimal(second.toDouble()/NEPTUNE_ORBITAL_SECOND).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
 }
