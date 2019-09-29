@@ -1,134 +1,64 @@
-class ChangeCalculator(private val changeList: List<Int>) {
+class ChangeCalculator(private var changeList: List<Int>) {
 
-    fun computeMostEfficientChange(amountCharge: Int): List<Int> {
+    private val outputList = mutableListOf<List<Int>>()
+    private var startTime: Long = 0
+    companion object {
+        private const val TIME_OUT_VALUE = 10000
+    }
+
+    fun computeMostEfficientChange(amountCharge: Int): List<Int>? {
         if (amountCharge < 0) {
             throw IllegalArgumentException("Negative totals are not allowed.")
         }
-        if (amountCharge > 0 && changeList.min()!! > amountCharge) {
+        if (amountCharge == 0) {
+            return emptyList()
+        }
+        changeList = changeList.filter { it <= amountCharge }.sorted().reversed()
+        if (changeList == emptyList<Int>()) {
             throw IllegalArgumentException("The total $amountCharge cannot be represented in the given currency.")
         }
-        val sortedChangeList = changeList.sorted().reversed()
-        val coefficientList = ArrayList<Int>()
-        for (coin in sortedChangeList) {
-            for (i in 0..amountCharge) {
-                if (coin * (i + 1) > amountCharge) {
-                    coefficientList.add(i)
-                    break
-                }
-            }
+        startTime = System.currentTimeMillis()
+        for (i in 0 until changeList.size) {
+            calc(remainCharge = amountCharge, index = i)
         }
-        return changeCalculator(coefficientList, sortedChangeList, amountCharge)
+        if (outputList == emptyList<Int>()) {
+            throw IllegalArgumentException("The total $amountCharge cannot be represented in the given currency.")
+        }
+        return outputList.minBy { it.size }?.reversed()
     }
 
-    private fun changeCalculator(coefficientList: List<Int>, changeList: List<Int>, amountCharge: Int): List<Int> {
-        val tableRowCoefficientList = (1..coefficientList.size).map { 0 }.toMutableList()
-        for (i in 0..coefficientList[coefficientList.size - 1]) {
-            if (coefficientList.size < 2) {
-                val determinedChange = determineChange(tableRowCoefficientList, changeList)
-                if (determinedChange.sum() == amountCharge) {
-                    return determinedChange
-                }
-                tableRowCoefficientList[tableRowCoefficientList.size - 1]++
-                continue
-            }
-            tableRowCoefficientList[tableRowCoefficientList.size - 2] = 0
-            for (j in 0..coefficientList[coefficientList.size - 2]) {
-                if (coefficientList.size < 3) {
-                    val determinedChange = determineChange(tableRowCoefficientList, changeList)
-                    if (determinedChange.sum() == amountCharge) {
-                        return determinedChange
-                    }
-                    tableRowCoefficientList[tableRowCoefficientList.size - 2]++
-                    continue
-                }
-                tableRowCoefficientList[tableRowCoefficientList.size - 3] = 0
-                for (k in 0..coefficientList[coefficientList.size - 3]) {
-                    if (coefficientList.size < 4) {
-                        val determinedChange = determineChange(tableRowCoefficientList, changeList)
-                        if (determinedChange.sum() == amountCharge) {
-                            return determinedChange
-                        }
-                        tableRowCoefficientList[tableRowCoefficientList.size - 3]++
-                        continue
-                    }
-                    tableRowCoefficientList[tableRowCoefficientList.size - 4] = 0
-                    for (l in 0..coefficientList[coefficientList.size - 4]) {
-                        if (coefficientList.size < 5) {
-                            val determinedChange = determineChange(tableRowCoefficientList, changeList)
-                            if (determinedChange.sum() == amountCharge) {
-                                return determinedChange
-                            }
-                            tableRowCoefficientList[tableRowCoefficientList.size - 4]++
-                            continue
-                        }
-                        tableRowCoefficientList[tableRowCoefficientList.size - 5] = 0
-                        for (m in 0..coefficientList[coefficientList.size - 5]) {
-                            if (coefficientList.size < 6) {
-                                val determinedChange = determineChange(tableRowCoefficientList, changeList)
-                                if (determinedChange.sum() == amountCharge) {
-                                    return determinedChange
-                                }
-                                tableRowCoefficientList[tableRowCoefficientList.size - 5]++
-                                continue
-                            }
-                            tableRowCoefficientList[tableRowCoefficientList.size - 6] = 0
-                            for (n in 0..coefficientList[coefficientList.size - 6]) {
-                                if (coefficientList.size < 7) {
-                                    val determinedChange = determineChange(tableRowCoefficientList, changeList)
-                                    if (determinedChange.sum() == amountCharge) {
-                                        return determinedChange
-                                    }
-                                    tableRowCoefficientList[tableRowCoefficientList.size - 6]++
-                                    continue
-                                }
-                                tableRowCoefficientList[tableRowCoefficientList.size - 7] = 0
-                                for (o in 0..coefficientList[coefficientList.size - 7]) {
-                                    if (coefficientList.size < 8) {
-                                        val determinedChange = determineChange(tableRowCoefficientList, changeList)
-                                        if (determinedChange.sum() == amountCharge) {
-                                            return determinedChange
-                                        }
-                                        tableRowCoefficientList[tableRowCoefficientList.size - 7]++
-                                        continue
-                                    }
-                                    tableRowCoefficientList[tableRowCoefficientList.size - 8] = 0
-                                    for (p in 0..coefficientList[coefficientList.size - 8]) {
-                                        if (coefficientList.size < 9) {
-                                            val determinedChange = determineChange(tableRowCoefficientList, changeList)
-                                            if (determinedChange.sum() == amountCharge) {
-                                                return determinedChange
-                                            }
-                                            tableRowCoefficientList[tableRowCoefficientList.size - 8]++
-                                            continue
-                                        }
-                                        tableRowCoefficientList[tableRowCoefficientList.size - 8]++
-                                    }
-                                    tableRowCoefficientList[tableRowCoefficientList.size - 7]++
-                                }
-                                tableRowCoefficientList[tableRowCoefficientList.size - 6]++
-                            }
-                            tableRowCoefficientList[tableRowCoefficientList.size - 5]++
-                        }
-                        tableRowCoefficientList[tableRowCoefficientList.size - 4]++
-                    }
-                    tableRowCoefficientList[tableRowCoefficientList.size - 3]++
-                }
-                tableRowCoefficientList[tableRowCoefficientList.size - 2]++
-            }
-            tableRowCoefficientList[tableRowCoefficientList.size - 1]++
+    /**
+     * changeListの要素の組み合わせで、和が丁度amountChargeとなるものをoutputListに詰めていく。
+     *
+     * @param coinList changeListの要素を検査していく過程で、和が0またはそれ以下になるまで、検査した要素を詰めていくリスト
+     * @param remainCharge remainChargeが0か0以下になるまで、chargeListの検査された要素をremainChargeから引き、coinListを作成する
+     * @param index changeListの要素を検査していくためのインデックス
+     */
+    private fun calc (coinList: MutableList<Int> = mutableListOf(), remainCharge: Int, index: Int = 0) {
+        //タイムアウト10秒
+        if (System.currentTimeMillis() - startTime > TIME_OUT_VALUE) {
+            return
         }
 
-        throw IllegalArgumentException("The total $amountCharge cannot be represented in the given currency.")
-    }
+        val newRemainCharge = remainCharge - changeList[index]
+        val cList = if (coinList == emptyList<Int>()) mutableListOf() else coinList
 
-    private fun determineChange(coefficientList: List<Int>, changeList: List<Int>): List<Int> {
-        val tmpList = ArrayList<List<Int>>()
-        for (i in 0 until coefficientList.size) {
-            if (coefficientList[i] > 0) tmpList.add((1..coefficientList[i]).map { changeList[i] })
+        if (newRemainCharge == 0) {
+            val cListClone = cList.map { it }.toMutableList()
+            cListClone.add(changeList[index])
+            outputList.add(cListClone)
+            return
         }
 
-        println(tmpList.flatten())
-        return tmpList.flatten().reversed()
-    }
+        if (newRemainCharge < 0) {
+            return
+        }
 
+        val cListClone = cList.map { it }.toMutableList()
+        cListClone.add(changeList[index])
+        for (i in index until changeList.size) {
+            calc(cListClone, newRemainCharge, i)
+        }
+    }
 }
+
