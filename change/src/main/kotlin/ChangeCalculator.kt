@@ -3,27 +3,21 @@ class ChangeCalculator(private var changeList: List<Int>) {
     private val outputList = mutableListOf<List<Int>>()
     private var startTime: Long = 0
     companion object {
-        private const val TIME_OUT_VALUE = 10000
+        private const val TIME_OUT_VALUE = 5000
     }
 
     fun computeMostEfficientChange(amountCharge: Int): List<Int>? {
-        if (amountCharge < 0) {
-            throw IllegalArgumentException("Negative totals are not allowed.")
-        }
+        require(amountCharge >= 0){ "Negative totals are not allowed." }
         if (amountCharge == 0) {
             return emptyList()
         }
         changeList = changeList.filter { it <= amountCharge }.sorted().reversed()
-        if (changeList == emptyList<Int>()) {
-            throw IllegalArgumentException("The total $amountCharge cannot be represented in the given currency.")
-        }
+        require(changeList != emptyList<Int>()){ "The total $amountCharge cannot be represented in the given currency." }
         startTime = System.currentTimeMillis()
         for (i in 0 until changeList.size) {
             calc(remainCharge = amountCharge, index = i)
         }
-        if (outputList == emptyList<Int>()) {
-            throw IllegalArgumentException("The total $amountCharge cannot be represented in the given currency.")
-        }
+        require(outputList != emptyList<Int>()){ "The total $amountCharge cannot be represented in the given currency." }
         return outputList.minBy { it.size }?.reversed()
     }
 
@@ -35,7 +29,7 @@ class ChangeCalculator(private var changeList: List<Int>) {
      * @param index changeListの要素を検査していくためのインデックス
      */
     private fun calc (coinList: MutableList<Int> = mutableListOf(), remainCharge: Int, index: Int = 0) {
-        //タイムアウト10秒
+        //タイムアウト5秒
         if (System.currentTimeMillis() - startTime > TIME_OUT_VALUE) {
             return
         }
@@ -61,4 +55,3 @@ class ChangeCalculator(private var changeList: List<Int>) {
         }
     }
 }
-
